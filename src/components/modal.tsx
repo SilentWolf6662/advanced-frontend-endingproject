@@ -2,66 +2,84 @@
 
 import { FormEvent, useState } from "react";
 
-import { z } from "zod";
-
-const Modal = ({ contactName, closeFunction }: { contactName: string, closeFunction: any }) => {
+const Modal = ({ contactName, closeModal }: ModalProps) => {
     const [formValidating, setFormValidating] = useState<boolean>(false);
-    const [errors, setErrors] = useState<any[]>([]);
-    const [name, setName] = useState<string>("");
-    const [email, setEmail] = useState<string>("");
-    const [subject, setSubject] = useState<string>("");
-    const [message, setMessage] = useState<string>("");
+    const [errors, setErrors] = useState<FormErrors[]>([]);
+    const [formData, setFormData] = useState({
+        name: "",
+        email: "",
+        subject: "",
+        message: ""
+    });
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value } = event.target;
+        setFormData(prevState => ({ ...prevState, [name]: value }));
+    };
+
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-        console.log("SEND the validated message form to the server");
         event.preventDefault();
-        setFormValidating(true)
+        setFormValidating(true);
 
         try {
-            console.log(name, email, subject, message);
-            // prepare validation rules for each field
-            const contactSchema = z.object({
-                name: z.string().min(3, { message: "Name must be at least 3 character long" }),
-                email: z.coerce.string().email().min(5, { message: "Email must be a valid email address" }),
-                subject: z.string().min(5, { message: "Subject must be at least 5 characters long" }),
-                message: z.string().min(10, { message: "Message must be at least 10 characters long" }),
+            const response = await fetch('/api/validateContactForm', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
             });
 
-            // store validation response
-            const response = contactSchema.safeParse({
-                name: name,
-                email: email,
-                subject: subject,
-                message: message
-            });
+            const result = await response.json();
 
-            // refine errors
-            if (!response.success) {
-                let errArr: any[] = [];
-                const { errors: err } = response.error;
-                for (var i = 0; i < err.length; i++) {
-                    errArr.push({ for: err[i].path[0], message: err[i].message });
-                }
-                setErrors(errArr);
-                throw err;
+            if (!response.ok) {
+                setErrors(result.errors);
+            } else {
+                setErrors([]);
+                handleResetForm();
+                setTimeout(() => {
+                    closeModal();
+                    setTimeout(() => {
+                        alert("Message sent successfully!");
+                    }, 200);
+                }, 100);
             }
-
-            setErrors([]);
         } catch (error) {
-            console.error(error);
+            console.error("Error submitting form:", error);
         } finally {
             setFormValidating(false);
         }
-    }
+    };
+
     const handleResetForm = () => {
-        setName("");
-        setEmail("");
-        setSubject("");
-        setMessage("");
-    }
+        setFormData({
+            name: "",
+            email: "",
+            subject: "",
+            message: ""
+        });
+    };
+
+    const renderInputField = (type: string, placeholder: string, name: string, value: string) => (
+        <div className="my-4">
+            <input
+                className="shadow mb-4 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                type={type}
+                placeholder={placeholder}
+                name={name}
+                value={value}
+                onChange={handleChange}
+            />
+            <div className="-mt-4 text-sm text-red-500">
+                {errors.find((error) => error.for === name)?.message}
+            </div>
+        </div>
+    );
+
     return (
         <div className="min-h-screen flex flex-col justify-center items-center absolute inset-0">
             {/* Blurry Background Layer */}
-            <div className="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm"></div>
+            <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm"></div>
 
             {/* Modal Content */}
             <div className="relative py-3 sm:max-w-xl sm:mx-auto z-10">
@@ -70,7 +88,7 @@ const Modal = ({ contactName, closeFunction }: { contactName: string, closeFunct
                     {/* Exit Button */}
                     <button
                         className="absolute top-4 right-4 text-black font-bold bg-[#feb372] rounded-full p-2 focus:outline-none"
-                        onClick={closeFunction}
+                        onClick={closeModal}
                     >
                         ✕
                     </button>
@@ -83,56 +101,18 @@ const Modal = ({ contactName, closeFunction }: { contactName: string, closeFunct
                     </div>
                     {/* Modal Form */}
                     <form onSubmit={handleSubmit} onReset={handleResetForm}>
-                        <div className="my-4">
-                            <input
-                                className="shadow mb-4 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                type="text"
-                                placeholder="Name"
-                                name="name"
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                            />
-                            <div className="-mt-4 text-xs text-red-500">
-                                {errors.find((error) => error.for === "name")?.message}
-                            </div>
-                        </div>
-                        <div className="my-4">
-                            <input
-                                className="shadow mb-4 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                type="email"
-                                placeholder="Email"
-                                name="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                            />
-                            <div className="-mt-4 text-xs text-red-500">
-                                {errors.find((error) => error.for === "email")?.message}
-                            </div>
-                        </div>
-                        <div className="my-4">
-                            <input
-                                className="shadow mb-4 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                type="text"
-                                placeholder="Subject"
-                                name="_subject"
-                                value={subject}
-                                onChange={(e) => setSubject(e.target.value)}
-                            />
-                            <div className="-mt-4 text-xs text-red-500">
-                                {errors.find((error) => error.for === "subject")?.message}
-                            </div>
-                        </div>
+                        {renderInputField("text", "Name", "name", formData.name)}
+                        {renderInputField("email", "Email", "email", formData.email)}
+                        {renderInputField("text", "Subject", "subject", formData.subject)}
                         <div className="my-4">
                             <textarea
-                                className="shadow mb-4 min-h-0 appearance-none border rounded h-64 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                className="shadow mb-4 min-h-0 h-[121px] appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 placeholder="Type your message here..."
                                 name="message"
-                                style={{ height: '121px' }}
-                                value={message}
-                                onChange={(e) => setMessage(e.target.value)}
-                            >
-                            </textarea>
-                            <div className="-mt-5 text-xs text-red-500">
+                                value={formData.message}
+                                onChange={handleChange}
+                            />
+                            <div className="-mt-5 text-sm text-red-500">
                                 {errors.find((error) => error.for === "message")?.message}
                             </div>
                         </div>
@@ -144,7 +124,7 @@ const Modal = ({ contactName, closeFunction }: { contactName: string, closeFunct
                             <input
                                 className="shadow bg-black hover:bg-[#4b2c0c] text-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline"
                                 type="submit"
-                                value="Send ➤"
+                                value={formValidating ? `Sending...` : `Send ➤`}
                             />
                         </div>
                     </form>

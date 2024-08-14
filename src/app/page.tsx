@@ -1,38 +1,60 @@
 'use client'
 
-import { useEffect, useState } from "react";
-
+import { useEffect, useState, useMemo } from "react";
+import FrontMobilePage from "@/components/sites/mobile/front";
 import Image from "next/image";
 import Link from "next/link";
 import Navbar from "@/components/nav";
-import { getAllData } from "@/data/fetch";
 import SkeletonFront from "@/components/skeleton/front";
+import { getAllData } from "@/data/fetch";
+import useMobileDetect from "@/hooks/device";
 
 export default function Home() {
-	const [allData, setAllData] = useState<any | null>(null);
+	const [allData, setAllData] = useState<AllData | null>(null);
+	const [isMobile, setIsMobile] = useState<boolean>(false);
+	const device = useMobileDetect();
 
 	useEffect(() => {
 		(async () => {
 			const data = await getAllData();
-			console.log(data);
 			setAllData(data);
-		})()
-	}, [])
+			setIsMobile(device.isMobile());
+		})();
+	}, []);
+
+	const content = useMemo(() => {
+		if (!allData) return <SkeletonFront />;
+		if (isMobile) return <FrontMobilePage data={allData} />;
+		return allData.front.map((data) => (
+			<Link
+				href={{
+					pathname: `/${data.nou_subpagelink.link}`,
+					query: { id: data.nou_subpagelink.id },
+				}}
+				className="w-full h-full"
+				key={data.id}
+			>
+				<Image
+					src={data.nou_subpagelink.imagesrc}
+					alt=""
+					width={220}
+					height={516}
+					className="w-auto h-auto"
+				/>
+			</Link>
+		));
+	}, [allData, isMobile]);
+
 	return (
 		<main className="flex flex-col min-h-screen items-center justify-between p-24 bg-gradient-to-b from-white to-[#b0d2e7]">
 			<div className="flex flex-col h-full gap-1">
 				<Navbar />
-				<div className="flex gap-9 -mt-3">
-					{
-						allData && allData.front ? allData.front.map((data: any) => (
-							<Link href={{ pathname: `/${data.nou_subpagelink.nou_subpage.link}`, query: { id: data.nou_subpagelink.nou_subpage.id } }} id="linkCard" className="w-full h-full" key={data.id}>
-								<Image src={data.nou_subpagelink.imagesrc} alt="" width={220} height={516} className="w-auto h-auto" />
-							</Link>
-						)) : <SkeletonFront />}
-				</div>
-				<div className="bg-black text-white font-bold text-center self-end px-3.5 mr-1 mt-1">
-					And yet... more to come
-				</div>
+				<div className="flex gap-9 -mt-3">{content}</div>
+				{!isMobile && (
+					<div className="bg-black text-white font-bold text-center self-end px-3.5 mr-1 mt-1">
+						And yet... more to come
+					</div>
+				)}
 			</div>
 		</main>
 	);

@@ -1,34 +1,31 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server';
+import { dbClient } from '@/lib/client';
 
-import { dbClient } from '@/lib/client'
+const supabase = dbClient;
 
-type RouteParams = {
-	params: {
-		id: string
-	}
-}
+export const GET = async () => {
+    try {
+        const { data: front, error } = await supabase
+            .from('nou_front')
+            .select(`*, nou_subpagelink(*, nou_subpage(*, nou_contacts(id, name, imagesrc)))`);
 
-const supabase = dbClient
+        if (error) {
+            throw new Error('Error fetching data from nou_front');
+        }
 
-export const GET = async (req: NextRequest, route: RouteParams) => {
+        if (!front) {
+            return NextResponse.json(
+                { error: 'Front Page not found' },
+                { status: 404 }
+            );
+        }
 
-	let { data: front, error } = await supabase
-		.from('nou_front')
-		.select(`*, nou_subpagelink(*, nou_subpage(*, nou_contacts(id, name, imagesrc)))`)
-
-	if (error) {
-		return NextResponse.json(
-			{ error: 'Error fetching data' },
-			{ status: 500 }
-		)
-	}
-
-	if (!front) {
-		return NextResponse.json(
-			{ error: 'Front Page not found' },
-			{ status: 404 }
-		)
-	}
-
-	return NextResponse.json({ front: front }, { status: 200 })
-}
+        return NextResponse.json({ front }, { status: 200 });
+    } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'Internal Server Error';
+        return NextResponse.json(
+            { error: errorMessage },
+            { status: 500 }
+        );
+    }
+};

@@ -1,36 +1,34 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server';
+import { dbClient } from '@/lib/client';
 
-import { dbClient } from '@/lib/client'
-
-type RouteParams = {
-	params: {
-		id: string
-	}
-}
-
-const supabase = dbClient
+const supabase = dbClient;
 
 export const GET = async (req: NextRequest, route: RouteParams) => {
-	const subpageId = route.params.id
+    const subpageId = route.params.id;
 
-	let { data: subpage, error } = await supabase
-		.from('nou_subpage')
-		.select(`*, nou_contacts(id, name, imagesrc)`)
-		.eq('id', subpageId)
+    try {
+        const { data: subpage, error } = await supabase
+            .from('nou_subpage')
+            .select(`*, nou_contacts(id, name, imagesrc)`)
+            .eq('id', subpageId);
 
-	if (error) {
-		return NextResponse.json(
-			{ error: 'Error fetching data' },
-			{ status: 500 }
-		)
-	}
+        if (error) {
+            throw new Error('Error fetching data from nou_subpage');
+        }
 
-	if (!subpage) {
-		return NextResponse.json(
-			{ error: 'Subpage not found' },
-			{ status: 404 }
-		)
-	}
+        if (!subpage) {
+            return NextResponse.json(
+                { error: 'Subpage not found' },
+                { status: 404 }
+            );
+        }
 
-	return NextResponse.json({ subpage: subpage }, { status: 200 })
-}
+        return NextResponse.json({ subpage }, { status: 200 });
+    } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'Internal Server Error';
+        return NextResponse.json(
+            { error: errorMessage },
+            { status: 500 }
+        );
+    }
+};

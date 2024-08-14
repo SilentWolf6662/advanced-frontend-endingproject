@@ -1,33 +1,31 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server';
+import { dbClient } from '@/lib/client';
 
-import { dbClient } from '@/lib/client'
+const supabase = dbClient;
 
-type RouteParams = {
-	params: {
-		id: string
-	}
-}
+export const GET = async () => {
+    try {
+        const { data: contacts, error } = await supabase
+            .from('nou_contacts')
+            .select('*');
 
-const supabase = dbClient
+        if (error) {
+            throw new Error('Error fetching data from nou_contacts');
+        }
 
-export const GET = async (req: NextRequest, route: RouteParams) => {
-	let { data: contacts, error } = await supabase
-		.from('nou_contacts')
-		.select(`*`)
+        if (!contacts) {
+            return NextResponse.json(
+                { error: 'Contacts not found' },
+                { status: 404 }
+            );
+        }
 
-	if (error) {
-		return NextResponse.json(
-			{ error: 'Error fetching data' },
-			{ status: 500 }
-		)
-	}
-
-	if (!contacts) {
-		return NextResponse.json(
-			{ error: 'Contacts not found' },
-			{ status: 404 }
-		)
-	}
-
-	return NextResponse.json({ contacts: contacts }, { status: 200 })
-}
+        return NextResponse.json({ contacts }, { status: 200 });
+    } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'Internal Server Error';
+        return NextResponse.json(
+            { error: errorMessage },
+            { status: 500 }
+        );
+    }
+};
