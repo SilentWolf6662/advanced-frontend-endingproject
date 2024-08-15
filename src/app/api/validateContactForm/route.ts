@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+
 import { z } from 'zod';
 
 const contactSchema = z.object({
@@ -18,6 +19,18 @@ export async function POST(req: NextRequest) {
                 field: err.path[0],
                 message: err.message,
             }));
+            if (body.email === '') {
+                errors.push({ field: 'email', message: 'Email is required' });
+            }
+            if (body.name === '') {
+                errors.push({ field: 'name', message: 'Name is required' });
+            }
+            if (body.subject === '') {
+                errors.push({ field: 'subject', message: 'Subject is required' });
+            }
+            if (body.message === '') {
+                errors.push({ field: 'message', message: 'Message is required' });
+            }
             return NextResponse.json({ errors }, { status: 400 });
         }
 
