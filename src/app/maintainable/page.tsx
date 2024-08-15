@@ -42,7 +42,7 @@ export default function Whatwedo(params: any) {
             setSubpageData(data);
             setIsMobile(device.isMobile());
         })();
-    }, [subpageId]);
+    }, [subpageId, device]);
 
     return (
         <main className="flex flex-col min-h-screen items-center justify-between p-24 bg-[#c0ddef]">

@@ -21,7 +21,7 @@ export default function Home() {
 			setAllData(data);
 			setIsMobile(device.isMobile());
 		})();
-	}, []);
+	}, [device]);
 
 	const content = useMemo(() => {
 		if (!allData) return <SkeletonFront />;
