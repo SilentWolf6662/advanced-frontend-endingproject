@@ -13,23 +13,23 @@ const fetchData = async (url: string) => {
 }
 
 export const getAllData = async () => {
-	return fetchData(`http://localhost:3000/api/front/`)
+	return fetchData(`https://advanced-frontend-endingproject.vercel.app/api/front/`)
 }
 
 export const getAllSubpageData = async () => {
-	return fetchData(`http://localhost:3000/api/subpage/`)
+	return fetchData(`https://advanced-frontend-endingproject.vercel.app/api/subpage/`)
 }
 
 export const getSubpageDataById = async (id: string) => {
 	if (!id) throw new Error('Failed to fetch data: ID is not provided')
-	return fetchData(`http://localhost:3000/api/subpage/${id}`)
+	return fetchData(`https://advanced-frontend-endingproject.vercel.app/api/subpage/${id}`)
 }
 
 export const getAllContactData = async () => {
-	return fetchData(`http://localhost:3000/api/contact/`)
+	return fetchData(`https://advanced-frontend-endingproject.vercel.app/api/contact/`)
 }
 
 export const getContactDataById = async (id: string) => {
 	if (!id) throw new Error('Failed to fetch data: ID is not provided')
-	return fetchData(`http://localhost:3000/api/contacts/${id}`)
+	return fetchData(`https://advanced-frontend-endingproject.vercel.app/api/contacts/${id}`)
 }
