@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
+
 import FrontMobilePage from "@/components/sites/mobile/front";
 import Image from "next/image";
 import Link from "next/link";
@@ -20,7 +21,7 @@ export default function Home() {
 			setAllData(data);
 			setIsMobile(device.isMobile());
 		})();
-	}, []);
+	}, [device]);
 
 	const content = useMemo(() => {
 		if (!allData) return <SkeletonFront />;

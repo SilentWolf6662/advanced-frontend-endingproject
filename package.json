@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@next/bundle-analyzer": "^14.2.5",
     "@supabase/ssr": "^0.4.0",
     "@supabase/supabase-js": "^2.45.1",
     "clsx": "^2.1.1",

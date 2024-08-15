@@ -1,20 +1,21 @@
+import Image from "next/image";
 import Link from "next/link";
 
 const Card = ({ item }: { item: FrontItem }) => (
     <Link
         key={item.id}
         href={{
-            pathname: `/${item.nou_subpagelink.nou_subpage.link}`,
-            query: { id: item.nou_subpagelink.nou_subpage.id }
+            pathname: `/${item.nou_subpagelink.link}`,
+            query: { id: item.nou_subpagelink.id }
         }}
         className="relative block h-48 rounded-lg overflow-hidden"
     >
-        <img
-            src={`${item.nou_subpagelink.nou_subpage.mobileimagesrc}`}
-            alt={item.nou_subpagelink.nou_subpage.link}
+        <Image
+            src={`${item.nou_subpagelink.mobileimagesrc}`}
+            alt={item.nou_subpagelink.link}
             className="w-full h-full object-center"
         />
-        <span className="sr-only">{item.nou_subpagelink.nou_subpage.link}</span>
+        <span className="sr-only">{item.nou_subpagelink.link}</span>
     </Link>
 );
 

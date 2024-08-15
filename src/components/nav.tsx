@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+
 import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -33,7 +34,7 @@ const Navbar = ({ className }: NavProps) => {
 		};
 
 		fetchData();
-	}, []);
+	}, [device]);
 
 	const renderLink = (subpage: SubpageData) => (
 		<Link key={subpage.id} href={{ pathname: `/${subpage.link}`, query: { id: subpage.id } }} className="flex flex-col items-center">

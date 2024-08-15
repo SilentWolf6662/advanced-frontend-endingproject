@@ -1,5 +1,6 @@
 'use client'
 
+import { DescriptionWithLineBreaks, TitleWithColoredWords } from "@/components/utilitiesComponent";
 import { useEffect, useState } from "react";
 
 import Image from "next/image";
@@ -8,7 +9,6 @@ import Navbar from "@/components/nav";
 import SkeletonSubpage from "@/components/skeleton/subpage";
 import { getSubpageDataById } from "@/data/fetch";
 import useMobileDetect from "@/hooks/device";
-import { DescriptionWithLineBreaks, TitleWithColoredWords } from "@/components/utilitiesComponent";
 
 const DesktopView = ({ subpageData }: { subpageData: any }) => (
     <div className="flex flex-col w-full h-full gap-1 items-center -mt-10">
@@ -46,7 +46,7 @@ export default function Whatwedo(params: any) {
         if (subpageId) {
             fetchData();
         }
-    }, [subpageId]);
+    }, [subpageId, device]);
 
     return (
         <main className="flex flex-col min-h-screen items-center justify-between p-24 bg-[#c0ddef]">
