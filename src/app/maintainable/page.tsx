@@ -38,7 +38,6 @@ export default function Whatwedo(params: any) {
 
     useEffect(() => {
         const fetchData = async () => {
-            console.log("subpageId: ", subpageId);
             const data = await getSubpageDataById(subpageId);
             setSubpageData(data);
             setIsMobile(device.isMobile());
@@ -46,7 +45,7 @@ export default function Whatwedo(params: any) {
         if (subpageId) {
             fetchData();
         }
-    }, [subpageId, device]);
+    }, [subpageId]);
 
     return (
         <main className="flex flex-col min-h-screen items-center justify-between p-24 bg-[#c0ddef]">

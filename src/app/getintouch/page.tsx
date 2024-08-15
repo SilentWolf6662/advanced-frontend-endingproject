@@ -1,16 +1,15 @@
 'use client'
 
-import { useEffect, useState, useCallback } from "react";
+import { DescriptionWithLineBreaks, TitleWithColoredWords } from "@/components/utilitiesComponent";
+import { useCallback, useEffect, useState } from "react";
 
 import GetInTouchMobilePage from "@/components/sites/mobile/getintouch";
 import Image from "next/image";
 import Modal from "@/components/modal";
 import Navbar from "@/components/nav";
 import SkeletonPageGetintouch from "@/components/skeleton/getintouch";
-
 import { getSubpageDataById } from "@/data/fetch";
 import useMobileDetect from "@/hooks/device";
-import { DescriptionWithLineBreaks, TitleWithColoredWords } from "@/components/utilitiesComponent";
 
 const DesktopView = ({ subpageData, openContactModal }: DesktopViewProps) => (
     <div className="flex flex-col w-full h-full gap-1 items-center -mt-10">
@@ -60,7 +59,7 @@ export default function Getintouch({ searchParams }: { searchParams: { id: strin
         if (subpageId) {
             fetchData();
         }
-    }, [subpageId, device]);
+    }, [subpageId]);
 
     const closeFunction = useCallback(() => {
         setShowModal(false);
