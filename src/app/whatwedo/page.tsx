@@ -37,14 +37,11 @@ export default function Whatwedo(params: any) {
     const device = useMobileDetect();
 
     useEffect(() => {
-        const fetchData = async () => {
+        (async () => {
             const data = await getSubpageDataById(subpageId);
             setSubpageData(data);
             setIsMobile(device.isMobile());
-        };
-        if (subpageId) {
-            fetchData();
-        }
+        })()
     }, []);
 
     return (

@@ -50,22 +50,19 @@ export default function Getintouch({ searchParams }: { searchParams: { id: strin
     const device = useMobileDetect();
 
     useEffect(() => {
-        const fetchData = async () => {
+        (async () => {
             const data = await getSubpageDataById(subpageId);
             setSubpageData(data);
             setModalData(data?.subpage[0]?.nou_contacts[0]);
             setIsMobile(device.isMobile());
-        };
-        if (subpageId) {
-            fetchData();
-        }
+        })();
     }, []);
 
     const closeFunction = useCallback(() => {
         setShowModal(false);
     }, []);
 
-    const openContactModal = useCallback((contact: any) => {
+    const openContactModal = useCallback((contact: Contact) => {
         setModalData(contact);
         setShowModal(true);
     }, []);
