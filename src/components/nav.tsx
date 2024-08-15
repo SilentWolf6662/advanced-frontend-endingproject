@@ -21,6 +21,7 @@ const Navbar = ({ className }: NavProps) => {
 
 	useEffect(() => {
 		const fetchData = async () => {
+			console.log('UseEffect Navbar');
 			try {
 				const data = await getAllSubpageData();
 				setState((prevState) => ({
@@ -34,7 +35,7 @@ const Navbar = ({ className }: NavProps) => {
 		};
 
 		fetchData();
-	}, [device]);
+	}, []);
 
 	const renderLink = (subpage: SubpageData) => (
 		<Link key={subpage.id} href={{ pathname: `/${subpage.link}`, query: { id: subpage.id } }} className="flex flex-col items-center">
