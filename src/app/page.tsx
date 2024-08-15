@@ -20,10 +20,12 @@ export default function Home() {
 			const data = await getAllData();
 			setAllData(data);
 			setIsMobile(device.isMobile());
+			console.log('UseEffect');
 		})();
 	}, []);
 
 	const content = useMemo(() => {
+		console.log('UseMemo');
 		if (!allData) return <SkeletonFront />;
 		if (isMobile) return <FrontMobilePage data={allData} />;
 		return allData.front.map((data) => (
