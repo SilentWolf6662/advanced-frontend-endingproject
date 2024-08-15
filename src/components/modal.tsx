@@ -34,12 +34,10 @@ const Modal = ({ contactName, closeModal }: ModalProps) => {
 
             if (!response.ok) {
                 const errorMap: { [key: string]: string } = {};
-                console.log("Result errors:", result.errors); // Add this line to inspect the errors
                 result.errors.forEach((error: { field: string, message: string }) => {
                     errorMap[error.field] = error.message;
                 });
                 setErrors(errorMap);
-                console.log("Errors:", errorMap);
             } else {
                 handleResetForm();
                 setTimeout(() => {

@@ -21,7 +21,6 @@ const Navbar = ({ className }: NavProps) => {
 
 	useEffect(() => {
 		const fetchData = async () => {
-			console.log('UseEffect Navbar');
 			try {
 				const data = await getAllSubpageData();
 				setState((prevState) => ({
