@@ -59,7 +59,7 @@ export default function Getintouch({ searchParams }: { searchParams: { id: strin
         if (subpageId) {
             fetchData();
         }
-    }, [subpageId]);
+    }, []);
 
     const closeFunction = useCallback(() => {
         setShowModal(false);
