@@ -56,7 +56,7 @@ export default function Getintouch({ searchParams }: { searchParams: { id: strin
             setModalData(data?.subpage[0]?.nou_contacts[0]);
             setIsMobile(device.isMobile());
         })();
-    }, [subpageId, device]);
+    }, [subpageId]);
 
     const closeFunction = useCallback(() => {
         setShowModal(false);
