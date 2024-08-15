@@ -36,7 +36,6 @@ const Modal = ({ contactName, closeModal }: ModalProps) => {
                 setErrors(result.errors);
                 console.log("Errors:", result.errors);
             } else {
-                setErrors([]);
                 handleResetForm();
                 setTimeout(() => {
                     closeModal();
@@ -59,23 +58,8 @@ const Modal = ({ contactName, closeModal }: ModalProps) => {
             subject: "",
             message: ""
         });
+        setErrors([]);
     };
-
-    const renderInputField = (type: string, placeholder: string, name: string, value: string) => (
-        <div className="my-4">
-            <input
-                className="shadow mb-4 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type={type}
-                placeholder={placeholder}
-                name={name}
-                value={value}
-                onChange={handleChange}
-            />
-            <div className="-mt-4 text-sm text-red-500">
-                {errors.find((error) => error.for === name)?.message}
-            </div>
-        </div>
-    );
 
     return (
         <div className="min-h-screen flex flex-col justify-center items-center absolute inset-0">
@@ -102,9 +86,45 @@ const Modal = ({ contactName, closeModal }: ModalProps) => {
                     </div>
                     {/* Modal Form */}
                     <form onSubmit={handleSubmit} onReset={handleResetForm}>
-                        {renderInputField("text", "Name", "name", formData.name)}
-                        {renderInputField("email", "Email", "email", formData.email)}
-                        {renderInputField("text", "Subject", "subject", formData.subject)}
+                        <div className="my-4">
+                            <input
+                                className="shadow mb-4 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                type="text"
+                                placeholder="Name"
+                                name="name"
+                                value={formData.name}
+                                onChange={handleChange}
+                            />
+                            <div className="-mt-4 text-sm text-red-500">
+                                {errors.find((error) => error.for === "name")?.message}
+                            </div>
+                        </div>
+                        <div className="my-4">
+                            <input
+                                className="shadow mb-4 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                type="email"
+                                placeholder="Email"
+                                name="email"
+                                value={formData.email}
+                                onChange={handleChange}
+                            />
+                            <div className="-mt-4 text-sm text-red-500">
+                                {errors.find((error) => error.for === "email")?.message}
+                            </div>
+                        </div>
+                        <div className="my-4">
+                            <input
+                                className="shadow mb-4 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                type="text"
+                                placeholder="Subject"
+                                name="subject"
+                                value={formData.subject}
+                                onChange={handleChange}
+                            />
+                            <div className="-mt-4 text-sm text-red-500">
+                                {errors.find((error) => error.for === "subject")?.message}
+                            </div>
+                        </div>
                         <div className="my-4">
                             <textarea
                                 className="shadow mb-4 min-h-0 h-[121px] appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
