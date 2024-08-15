@@ -37,8 +37,8 @@ const Modal = ({ contactName, closeModal }: ModalProps) => {
                 result.errors.forEach((error: { for: string, message: string }) => {
                     errorMap[error.for] = error.message;
                 });
-                setErrors(result.errors);
-                console.log("Errors:", result.errors);
+                setErrors(errorMap);
+                console.log("Errors:", errorMap);
             } else {
                 handleResetForm();
                 setTimeout(() => {
