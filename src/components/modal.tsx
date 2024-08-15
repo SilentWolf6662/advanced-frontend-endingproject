@@ -4,7 +4,7 @@ import { FormEvent, useState } from "react";
 
 const Modal = ({ contactName, closeModal }: ModalProps) => {
     const [formValidating, setFormValidating] = useState<boolean>(false);
-    const [errors, setErrors] = useState<FormErrors[]>([]);
+    const [errors, setErrors] = useState<{ [key: string]: string }>({});
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -33,6 +33,10 @@ const Modal = ({ contactName, closeModal }: ModalProps) => {
             const result = await response.json();
 
             if (!response.ok) {
+                const errorMap: { [key: string]: string } = {};
+                result.errors.forEach((error: { for: string, message: string }) => {
+                    errorMap[error.for] = error.message;
+                });
                 setErrors(result.errors);
                 console.log("Errors:", result.errors);
             } else {
@@ -58,7 +62,7 @@ const Modal = ({ contactName, closeModal }: ModalProps) => {
             subject: "",
             message: ""
         });
-        setErrors([]);
+        setErrors({});
     };
 
     return (
@@ -96,7 +100,7 @@ const Modal = ({ contactName, closeModal }: ModalProps) => {
                                 onChange={handleChange}
                             />
                             <div className="-mt-4 text-sm text-red-500">
-                                {errors.find((error) => error.for === "name")?.message}
+                                {errors.name}
                             </div>
                         </div>
                         <div className="my-4">
@@ -109,7 +113,7 @@ const Modal = ({ contactName, closeModal }: ModalProps) => {
                                 onChange={handleChange}
                             />
                             <div className="-mt-4 text-sm text-red-500">
-                                {errors.find((error) => error.for === "email")?.message}
+                                {errors.email}
                             </div>
                         </div>
                         <div className="my-4">
@@ -122,7 +126,7 @@ const Modal = ({ contactName, closeModal }: ModalProps) => {
                                 onChange={handleChange}
                             />
                             <div className="-mt-4 text-sm text-red-500">
-                                {errors.find((error) => error.for === "subject")?.message}
+                                {errors.subject}
                             </div>
                         </div>
                         <div className="my-4">
@@ -134,7 +138,7 @@ const Modal = ({ contactName, closeModal }: ModalProps) => {
                                 onChange={handleChange}
                             />
                             <div className="-mt-5 text-sm text-red-500">
-                                {errors.find((error) => error.for === "message")?.message}
+                                {errors.message}
                             </div>
                         </div>
                         <div className="flex justify-between">
