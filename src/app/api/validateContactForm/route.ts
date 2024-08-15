@@ -19,16 +19,16 @@ export async function POST(req: NextRequest) {
                 field: err.path[0],
                 message: err.message,
             }));
-            if (body.email === '') {
+            if (body.email === '' && errors.every(err => err.field !== 'email')) {
                 errors.push({ field: 'email', message: 'Email is required' });
             }
-            if (body.name === '') {
+            if (body.name === '' && errors.every(err => err.field !== 'name')) {
                 errors.push({ field: 'name', message: 'Name is required' });
             }
-            if (body.subject === '') {
+            if (body.subject === '' && errors.every(err => err.field !== 'subject')) {
                 errors.push({ field: 'subject', message: 'Subject is required' });
             }
-            if (body.message === '') {
+            if (body.message === '' && errors.every(err => err.field !== 'message')) {
                 errors.push({ field: 'message', message: 'Message is required' });
             }
             return NextResponse.json({ errors }, { status: 400 });

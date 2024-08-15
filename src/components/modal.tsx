@@ -34,6 +34,7 @@ const Modal = ({ contactName, closeModal }: ModalProps) => {
 
             if (!response.ok) {
                 setErrors(result.errors);
+                console.log("Errors:", result.errors);
             } else {
                 setErrors([]);
                 handleResetForm();
